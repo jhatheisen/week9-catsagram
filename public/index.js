@@ -7,7 +7,6 @@ async function getCat() {
         const res = await fetch("https://api.thecatapi.com/v1/images/search")
         const data = await res.json()
 
-        console.log(data[0].url)
         const url = data[0].url
 
         let catImage = document.createElement("img")
@@ -21,17 +20,30 @@ async function getCat() {
    }
 }
 async function changeCat(event) {
-    event.preventDefault()
-   const catImage = await fetch("https://api.thecatapi.com/v1/images/search")
-   const data = await catImage.json()
-   const url = data[0].url
+  event.preventDefault()
+  const catImage = await fetch("https://api.thecatapi.com/v1/images/search")
+  const data = await catImage.json()
+  const url = data[0].url
 
-   const imageLocation = document.body.querySelector("img")
-   imageLocation.setAttribute("src", url)
-   const voteCount = document.getElementById("votes")
+  const imageLocation = document.body.querySelector("img")
+  imageLocation.setAttribute("src", url)
 
+  // reset votes
+  const voteCount = document.getElementById("votes")
+  voteCount.innerText = 0
 
-   voteCount.innerText = 0
+  // reset comments
+  const ol = document.getElementById('comments');
+  const commentBox = document.getElementById('comment-field');
+  ol.innerHTML = '';
+  commentBox.value = '';
+
+}
+
+let commentId = 0;
+function generateCommentId() {
+  commentId++;
+  return commentId;
 }
 
 // p1
@@ -49,7 +61,32 @@ function downVote() {
     count--
     voteCount.innerText = count
 }
+function submitComment() {
+  const commentBox = document.getElementById('comment-field');
+  const input = commentBox.value;
+  const ol = document.getElementById('comments');
 
+  if (input) {
+    let id = generateCommentId();
+
+    const comment = document.createElement('li');
+    comment.setAttribute('id', id);
+    comment.innerText = input;
+
+    const deleteButton = document.createElement('button');
+    deleteButton.setAttribute('id', id);
+    deleteButton.innerHTML = 'Delete';
+
+    ol.append(comment, deleteButton);
+  }
+}
+function deleteComment(id) {
+  const comment = document.getElementById(id);
+  console.log(comment);
+  comment.remove();
+  const button = document.getElementById(id);
+  button.remove();
+}
 
 
 window.addEventListener('DOMContentLoaded', (event) => {
@@ -63,49 +100,17 @@ window.addEventListener('DOMContentLoaded', (event) => {
     upVoteButton.addEventListener("click", addVote)
     downVoteButton.addEventListener("click", downVote)
 
+    const submitButton = document.getElementById('submit');
+
+    submitButton.addEventListener('click', submitComment);
+
+    const ol = document.getElementById('comments');
+
+    ol.addEventListener('click', event => {
+      event.stopPropagation();
+      let commentId = event.target.id;
+      deleteComment(commentId);
+    });
 })
-
-
-
-
-
-// p2
-
-
-
-// on click get text,
-// new func
-// change to num,
-// inc text to -- or ++
-// change text on html
-
-// go back to change cat, if new cat button clicked, reset upvotes to 0
-
-// p3
-
-// in html
-// add an add comment button, and text field
-// create ul for all comments
-
-// on click call add comment
-
-// new func, add comment
-// get text field val
-// create new li
-// change li val to text field
-// add to ul
-
-// bonus delete
-
-// go back add button for each li
-// add id for each li
-
-// on click call delete comment(id of comment)
-
-// new func, delet comment
-// go in ul and delete li element
-// based on id
-
-
 
 window.onload = () => { getCat() }
