@@ -20,29 +20,58 @@ async function getCat() {
     console.log("no kitten pic")
    }
 }
+async function changeCat(event) {
+    event.preventDefault()
+   const catImage = await fetch("https://api.thecatapi.com/v1/images/search")
+   const data = await catImage.json()
+   const url = data[0].url
+
+   const imageLocation = document.body.querySelector("img")
+   imageLocation.setAttribute("src", url)
+   const voteCount = document.getElementById("votes")
+
+
+   voteCount.innerText = 0
+}
+
 // p1
+function addVote() {
+    const voteCount = document.getElementById("votes")
+    let count = Number(voteCount.innerText)
+    console.log(count)
+    count++
+    voteCount.innerText = count
+}
+function downVote() {
+    const voteCount = document.getElementById("votes")
+    let count = Number(voteCount.innerText)
+    console.log(count)
+    count--
+    voteCount.innerText = count
+}
 
 
-// in html
-// create button el
-// set id attribute
 
-// windows .add event
-// save button location as var
+window.addEventListener('DOMContentLoaded', (event) => {
+    const newCatbutton = document.getElementById('new-cat')
+    newCatbutton.addEventListener("click", changeCat)
 
-// on click
-// call change cat
+    const upVoteButton = document.getElementById("up")
+    const downVoteButton = document.getElementById("down")
 
-// prevent default
-// new func change cat
-// fetches new cat img
-// changes src of img to new cat
+
+    upVoteButton.addEventListener("click", addVote)
+    downVoteButton.addEventListener("click", downVote)
+
+})
+
+
+
+
 
 // p2
 
-// html
-// add 2 buttons, up , down
-// add text default 0
+
 
 // on click get text,
 // new func
